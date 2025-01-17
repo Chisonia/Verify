@@ -81,26 +81,23 @@ class ThemeProvider with ChangeNotifier {
       ),
     )
         : ThemeData.light().copyWith(
-      appBarTheme: AppBarTheme(
-        backgroundColor: Colors.grey[50],
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.white,
       ),
-      scaffoldBackgroundColor: Colors.grey[100],
-
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        selectedIconTheme: IconThemeData(color: Colors.deepPurple[800]),
-        unselectedIconTheme: IconThemeData(color: Colors.grey[800]),
-      ),
+      scaffoldBackgroundColor: Colors.white,
       textTheme: const TextTheme(
-        bodyLarge: TextStyle(
-          color: Color(0xFF01031A),
-          fontSize: 16,
-          fontFamily: "assets/fonts/clashdisplay_medium.otf",
-        ),
-        bodyMedium: TextStyle(
-          color: Color(0xFF01031A),
-          fontSize: 14,
-          fontFamily: "assets/fonts/clashdisplay_light.otf",
-        ),
+          bodyLarge: TextStyle(
+            color: Color(0xFF01031A),
+            fontSize: 16,
+            fontFamily: "assets/fonts/clashdisplay_medium.otf",
+            fontWeight: FontWeight.w500
+            ),
+              bodyMedium: TextStyle(
+              color: Color(0xFF01031A),
+              fontSize: 14,
+              fontFamily: "assets/fonts/clashdisplay_medium.otf",
+              fontWeight: FontWeight.w500
+          ),
         bodySmall: TextStyle(
           color: Color(0xFF01031A),
           fontSize: 12,
@@ -113,25 +110,28 @@ class ThemeProvider with ChangeNotifier {
           fontFamily: "assets/fonts/clashdisplay_semibold.otf",
         ),
         displayMedium: TextStyle(
-          color:Color(0xFF3ACE01),
-          fontSize: 30,
-          fontFamily: "assets/fonts/clashdisplay_semibold.otf",
+            color:Color(0xFF105341),
+            fontSize: 16,
+            decoration: TextDecoration.underline, // Adds underline
+            fontFamily: "assets/fonts/clashdisplay_semibold.otf",
+            fontWeight: FontWeight.w600
         ),
         displaySmall: TextStyle(
           color:Color(0xFFFF0000),
           fontSize: 12,
-          fontFamily: "assets/fonts/clashdisplay_light.otf",
-        ),
-        headlineLarge: TextStyle(
-          color:Color(0xFF01031A),
-          fontSize: 18,
           fontFamily: "assets/fonts/clashdisplay_medium.otf",
         ),
+        headlineLarge: TextStyle(
+            color:Color(0xFF01031A),
+            fontSize: 18,
+            fontFamily: "assets/fonts/clashdisplay_medium.otf",
+            fontWeight: FontWeight.w500
+        ),
         headlineMedium: TextStyle(
-            color:Colors.black87,
+            color:Color(0xFF01031A),
             fontSize: 16,
-            fontFamily: "assets/fonts/",
-            fontWeight: FontWeight.bold
+            fontFamily: "assets/fonts/clashdisplay_semibold.otf",
+            fontWeight: FontWeight.w600
         ),
         headlineSmall: TextStyle(
           color:Color(0xFF3ACE01),
@@ -145,14 +145,14 @@ class ThemeProvider with ChangeNotifier {
             fontWeight: FontWeight.bold
         ),
         titleMedium: TextStyle(
-          color: Color(0xFF3ACE01),
-          fontSize: 14,
-          fontFamily: "assets/fonts/clashdisplay_light.otf",
+          color: Color(0xFF01031A),
+          fontSize: 12,
+          fontFamily: "assets/fonts/clashdisplay_regular.otf",
         ),
         titleSmall: TextStyle(
             color:Color(0xFF999898),
             fontSize: 12,
-            fontFamily: "assets/fonts/clashdisplay_light.otf",
+            fontFamily: "assets/fonts/clashdisplay_regular.otf",
         ),
         labelLarge: TextStyle(
           color:Color(0xFF3ACE01),
