@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:verify/Screens/scan_screen.dart';
 import 'package:verify/Screens/notification_screen.dart';
+import 'package:verify/Screens/scan_screen.dart';
 import '../Custom Widgets/history_card.dart';
 import '../Custom Widgets/product_card.dart';
 

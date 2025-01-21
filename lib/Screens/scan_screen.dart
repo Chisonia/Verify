@@ -1,7 +1,9 @@
+
 // Screens
 import 'package:flutter/material.dart';
 import '../Custom Widgets/greenbutton.dart';
 import '../Custom Widgets/header.dart';
+import 'manual_screen.dart';
 
 class ScanScreen extends StatelessWidget {
   const ScanScreen({super.key});
@@ -24,8 +26,8 @@ class ScanScreen extends StatelessWidget {
             const SizedBox(height: 32),
             Text(
                 'Verification',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headlineMedium
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineMedium
             ),
             const SizedBox(height: 20),
             SizedBox(
@@ -66,7 +68,12 @@ class ScanScreen extends StatelessWidget {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
                 padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ManualNafdacEntryPage()),
+                );
+              },
               child: Center(
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
