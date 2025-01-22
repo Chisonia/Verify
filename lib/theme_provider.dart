@@ -139,10 +139,10 @@ class ThemeProvider with ChangeNotifier {
           fontFamily: "assets/fonts/clashdisplay_light.otf",
         ),
         titleLarge: TextStyle(
-            color:Colors.black87,
-            fontSize: 24,
-            fontFamily: "assets/fonts/",
-            fontWeight: FontWeight.bold
+            color:Color(0xFF01031A),
+            fontSize: 22,
+            fontFamily: "assets/fonts/clashdisplay_semibold.otf",
+            fontWeight: FontWeight.w500
         ),
         titleMedium: TextStyle(
           color: Color(0xFF01031A),
@@ -155,9 +155,9 @@ class ThemeProvider with ChangeNotifier {
             fontFamily: "assets/fonts/clashdisplay_regular.otf",
         ),
         labelLarge: TextStyle(
-          color:Color(0xFF3ACE01),
-          fontSize: 18,
-          fontFamily: "assets/fonts/Inter_18pt-Bold.ttf",
+          color:Color(0xFF01031A),
+          fontSize: 14,
+          fontFamily: "assets/fonts/clashdisplay_regular.otf",
         ),
         labelMedium: TextStyle(
           color:Color(0xFFFFFFFF),

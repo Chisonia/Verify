@@ -48,9 +48,12 @@ class ManualNafdacEntryPageState extends State<ManualNafdacEntryPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text("Product Name: ${product['productName']}", style: const TextStyle(fontSize: 18)),
-            Text("NAFDAC Number: ${product['nafdacNumber']}", style: const TextStyle(fontSize: 16)),
-            Text("Manufacturer: ${product['manufacturer']['name']}", style: const TextStyle(fontSize: 16)),
+            Text("Product Name: ${product['productName']}",
+                style: const TextStyle(fontSize: 18)),
+            Text("NAFDAC Number: ${product['nafdacNumber']}",
+                style: const TextStyle(fontSize: 16)),
+            Text("Manufacturer: ${product['manufacturer']['name']}",
+                style: const TextStyle(fontSize: 16)),
           ],
         ),
       ),
@@ -85,13 +88,27 @@ class ManualNafdacEntryPageState extends State<ManualNafdacEntryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Enter NAFDAC Number"),
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: Image.asset(
+            'assets/icons/back_icon.png',
+            width: 12.0,
+            height: 24.0,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: const Text('Manual Entry'),
+        centerTitle: true,
+        elevation: 0,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // NAFDAC Number Input
             TextField(
               controller: _nafdacController,
               keyboardType: TextInputType.number,
@@ -101,16 +118,94 @@ class ManualNafdacEntryPageState extends State<ManualNafdacEntryPage> {
                   _fetchProductDetails(value);
                 }
               },
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: "Enter NAFDAC number here...",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.numbers),
+                border: const OutlineInputBorder(),
+                prefixIcon: Image.asset(
+                  'assets/icons/number.png',
+                  width: 24.0,
+                  height: 24.0,
+                ),
               ),
             ),
-            const SizedBox(height: 16),
-            _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : Container(),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF105341),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(32),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+              ),
+              onPressed: () {
+                final nafdacNumber = _nafdacController.text;
+                if (nafdacNumber.isNotEmpty && nafdacNumber.length == 8) {
+                  _fetchProductDetails(nafdacNumber);
+                }
+              },
+              child: Center(
+                child: Text(
+                  'Check',
+                  style: Theme.of(context).textTheme.labelMedium,
+                ),
+              ),
+            ),
+            // Numeric Keypad (Sample for entering numbers)
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  GridView.builder(
+                    shrinkWrap: true,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 8.0,
+                      mainAxisSpacing: 8.0,
+                    ),
+                    itemCount: 12, // 0-9 + delete
+                    itemBuilder: (context, index) {
+                      String buttonText;
+                      if (index < 9) {
+                        buttonText = (index + 1).toString();
+                      } else if (index == 9) {
+                        buttonText = '0';
+                      } else {
+                        buttonText = index == 10 ? 'OK' : 'X'; // X for delete
+                      }
+
+                      return ElevatedButton(
+                        onPressed: () {
+                          String currentValue = _nafdacController.text;
+                          if (index < 9) {
+                            _nafdacController.text = currentValue + (index + 1)
+                                .toString();
+                          } else if (index == 9) {
+                            _nafdacController.text = '${currentValue}0';
+                          } else if (index == 11) {
+                            // Handle backspace
+                            _nafdacController.text = currentValue
+                                .isNotEmpty ? currentValue
+                                .substring(0, currentValue.length - 1) : '';
+                          }
+                          setState(() {});
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ), backgroundColor: Colors.grey.shade200,
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        ),
+                        child: Text(buttonText,
+                            style: const TextStyle(
+                                fontSize: 24, color: Colors.black
+                            )
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:verify/Screens/notification_screen.dart';
-import 'package:verify/Screens/scan_screen.dart';
+import 'package:verify/Screens/decision_screen.dart';
 import '../Custom Widgets/history_card.dart';
 import '../Custom Widgets/product_card.dart';
 
@@ -17,15 +17,15 @@ class HomePageState extends State<HomePage> {
   // Pages for each tab
   final List<Widget> _pages = [
     const HomeTab(),
-    const ScanScreen(),
+    const DecisionScreen(),
     const NotificationScreen(),
   ];
 
   // App bar titles
   final List<String> _appBarTitles = [
     '',
-    'Scan',
-    'Notifications',
+    '',
+    '',
   ];
 
   // Custom app bars for specific screens
@@ -36,6 +36,7 @@ class HomePageState extends State<HomePage> {
         elevation: 0,
         backgroundColor: Colors.white,
         toolbarHeight: 60,
+        automaticallyImplyLeading: false, // Disable the default back arrow
         title: Row(
           children: [
             const CircleAvatar(
@@ -55,8 +56,8 @@ class HomePageState extends State<HomePage> {
           ),
         ],
       );
-    } else if (index == 1) {
-      // Scan AppBar
+    } else if (index == 1 || index == 2) {
+      // Common AppBar for Scan and Notifications
       return AppBar(
         backgroundColor: Colors.white,
         leading: IconButton(
@@ -65,24 +66,11 @@ class HomePageState extends State<HomePage> {
             width: 12.0,
             height: 24.0,
           ),
-          onPressed: () {}, // Custom back arrow handler
-        ),
-        title: Text(
-          _appBarTitles[index],
-          style: Theme.of(context).textTheme.headlineLarge,
-        ),
-      );
-    } else if (index == 2) {
-      // Notification AppBar
-      return AppBar(
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: Image.asset(
-            'assets/icons/back_icon.png',
-            width: 12.0,
-            height: 24.0,
-          ),
-          onPressed: () {}, // Custom back arrow handler
+          onPressed: () {
+            setState(() {
+              _selectedIndex = 0; // Navigate back to the Home tab
+            });
+          },
         ),
         title: Text(
           _appBarTitles[index],
@@ -116,7 +104,7 @@ class HomePageState extends State<HomePage> {
           ),
           _buildBottomNavigationBarItem(
             icon: 'assets/icons/scan_icon-min.png',
-            label: 'Scan',
+            label: 'Check',
             isSelected: _selectedIndex == 1, // Check if it's selected
           ),
           _buildBottomNavigationBarItem(
@@ -183,7 +171,7 @@ class HomePageState extends State<HomePage> {
 }
 
 class HomeTab extends StatelessWidget {
-  const HomeTab({super.key});
+  const HomeTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
