@@ -20,7 +20,7 @@ class DecisionScreen extends StatelessWidget {
             height: 24.0,
           ),
           onPressed: () {
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (context) => const HomePage(),
@@ -96,7 +96,7 @@ class DecisionScreen extends StatelessWidget {
                 const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
               ),
               onPressed: () {
-                Navigator.pushReplacement(
+                Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => const ManualEntryOnboarding(),

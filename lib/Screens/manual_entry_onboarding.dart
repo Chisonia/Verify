@@ -10,6 +10,7 @@ class ManualEntryOnboarding extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        elevation: 0,
         leading: IconButton(
           icon: Image.asset(
             'assets/icons/back_icon.png',
@@ -17,15 +18,9 @@ class ManualEntryOnboarding extends StatelessWidget {
             height: 24.0,
           ),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const DecisionScreen(showBackArrow: true),
-              ),
-            );
+            Navigator.pop(context);
           },
         ),
-        title: const Text(''),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -67,7 +62,7 @@ class ManualEntryOnboarding extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Image.asset(
                   'assets/icons/mage_scan.png',
@@ -79,7 +74,6 @@ class ManualEntryOnboarding extends StatelessWidget {
                   child: Text(
                     'The NAFDAC number is properly entered to avoid any '
                         'error in the verification process.',
-                    textAlign: TextAlign.start,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
@@ -87,8 +81,7 @@ class ManualEntryOnboarding extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Image.asset(
                   'assets/icons/internet_antenna.png',
@@ -100,7 +93,6 @@ class ManualEntryOnboarding extends StatelessWidget {
                   child: Text(
                     'You are connected to a stable internet connection '
                         'to avoid any disruption.',
-                    textAlign: TextAlign.start,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
@@ -116,7 +108,7 @@ class ManualEntryOnboarding extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
               ),
               onPressed: () {
-                Navigator.pushReplacement(
+                Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => const ManualNafdacEntryPage(),

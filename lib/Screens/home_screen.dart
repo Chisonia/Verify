@@ -171,7 +171,7 @@ class HomePageState extends State<HomePage> {
 }
 
 class HomeTab extends StatelessWidget {
-  const HomeTab({Key? key}) : super(key: key);
+  const HomeTab({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -222,12 +222,18 @@ class HomeTab extends StatelessWidget {
                           const SizedBox(height: 4),
                           SizedBox(
                             child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 TextButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const DecisionScreen(),
+                                      ),
+                                    );
+                                  },
                                   child: Text(
                                     'Start Verifying',
                                     textAlign: TextAlign.start,
@@ -236,10 +242,9 @@ class HomeTab extends StatelessWidget {
                                         .displayMedium,
                                   ),
                                 ),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: Image.asset(
-                                        'assets/icons/solar_arrow.png'))
+                                Image.asset(
+                                    'assets/icons/solar_arrow.png'
+                                ),
                               ],
                             ),
                           ),

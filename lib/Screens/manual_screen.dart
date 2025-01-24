@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:verify/Screens/decision_screen.dart';
+import 'dart:convert';
+
+import 'manual_entry_onboarding.dart';
 
 class ManualNafdacEntryPage extends StatefulWidget {
   const ManualNafdacEntryPage({super.key});
@@ -11,51 +16,72 @@ class ManualNafdacEntryPageState extends State<ManualNafdacEntryPage> {
   final TextEditingController _nafdacController = TextEditingController();
   bool _isLoading = false;
 
-  // Dummy API logic
   Future<Map<String, dynamic>> searchProduct(String nafdacNumber) async {
-    // Simulate a network delay
-    await Future.delayed(const Duration(seconds: 1));
-
-    // Call your search_product logic
-    return search_product(nafdacNumber: nafdacNumber);
+    const apiUrl = 'http://192.168.126.252:5000/api/verify-product/';
+    try {
+      final response = await http.get(Uri.parse('$apiUrl$nafdacNumber'));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return {
+          "status": "success",
+          "product": data['product'],
+        };
+      } else if (response.statusCode == 404) {
+        final data = json.decode(response.body);
+        return {
+          "status": "error",
+          "message": data['message'],
+          "suggestions": [
+            "Double-check the NAFDAC number entered.",
+            "Report suspicious products to NAFDAC."
+          ]
+        };
+      } else {
+        return {
+          "status": "error",
+          "message": "An unexpected error occurred. Please try again later.",
+        };
+      }
+    } catch (e) {
+      return {
+        "status": "error",
+        "message": "Failed to connect to the server. Please check your internet connection.",
+      };
+    }
   }
 
   void _fetchProductDetails(String nafdacNumber) async {
-    setState(() {
-      _isLoading = true;
-    });
-
+    setState(() => _isLoading = true);
     final response = await searchProduct(nafdacNumber);
-
-    setState(() {
-      _isLoading = false;
-    });
+    setState(() => _isLoading = false);
 
     if (response['status'] == 'success') {
-      // Display overlay with product details
       _showProductDetails(response['product']);
     } else {
-      // Show error message
-      _showErrorDialog(response['message'], response['suggestions']);
+      _showErrorDialog(response['message'], response['suggestions'] ?? []);
     }
   }
 
   void _showProductDetails(Map<String, dynamic> product) {
-    showModalBottomSheet(
+    showDialog(
       context: context,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(16),
-        child: Column(
+      builder: (context) => AlertDialog(
+        title: const Text("Product Details"),
+        content: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Product Name: ${product['productName']}",
-                style: const TextStyle(fontSize: 18)),
-            Text("NAFDAC Number: ${product['nafdacNumber']}",
-                style: const TextStyle(fontSize: 16)),
-            Text("Manufacturer: ${product['manufacturer']['name']}",
-                style: const TextStyle(fontSize: 16)),
+            Text("Product Name: ${product['productName']}"),
+            Text("NAFDAC Number: ${product['nafdacNumber']}"),
+            Text("Manufacturer: ${product['manufacturer']['name']}"),
           ],
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Close"),
+          ),
+        ],
       ),
     );
   }
@@ -67,11 +93,14 @@ class ManualNafdacEntryPageState extends State<ManualNafdacEntryPage> {
         title: const Text("Error"),
         content: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(message),
-            const SizedBox(height: 16),
-            const Text("Suggestions:"),
-            for (var suggestion in suggestions) Text("• $suggestion"),
+            const SizedBox(height: 8),
+            if (suggestions.isNotEmpty) ...[
+              const Text("Suggestions:"),
+              for (var suggestion in suggestions) Text("• $suggestion"),
+            ]
           ],
         ),
         actions: [
@@ -96,6 +125,7 @@ class ManualNafdacEntryPageState extends State<ManualNafdacEntryPage> {
             height: 24.0,
           ),
           onPressed: () {
+            // Navigate back to Decision screen
             Navigator.pop(context);
           },
         ),
@@ -106,29 +136,29 @@ class ManualNafdacEntryPageState extends State<ManualNafdacEntryPage> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            // NAFDAC Number Input
+            const SizedBox(height: 60),
             TextField(
               controller: _nafdacController,
-              keyboardType: TextInputType.number,
-              maxLength: 8, // Set the expected NAFDAC number length
-              onChanged: (value) {
-                if (value.length == 8) {
-                  _fetchProductDetails(value);
-                }
-              },
+              keyboardType: TextInputType.visiblePassword,
               decoration: InputDecoration(
-                labelText: "Enter NAFDAC number here...",
-                border: const OutlineInputBorder(),
+                labelText: 'Enter NAFDAC number here...',
+                labelStyle: Theme.of(context).textTheme.titleSmall,
+                filled: true,
+                fillColor: Colors.grey[100],
                 prefixIcon: Image.asset(
                   'assets/icons/number.png',
                   width: 24.0,
                   height: 24.0,
                 ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                  borderSide: BorderSide.none,
+                ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 60),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF105341),
@@ -137,111 +167,26 @@ class ManualNafdacEntryPageState extends State<ManualNafdacEntryPage> {
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
               ),
-              onPressed: () {
+              onPressed: _isLoading
+                  ? null
+                  : () {
                 final nafdacNumber = _nafdacController.text;
-                if (nafdacNumber.isNotEmpty && nafdacNumber.length == 8) {
+                if (nafdacNumber.isNotEmpty && nafdacNumber.length == 7) {
                   _fetchProductDetails(nafdacNumber);
                 }
               },
-              child: Center(
+              child: _isLoading
+                  ? const CircularProgressIndicator(color: Color(0xFF3ACE01))
+                  :  Center(
                 child: Text(
                   'Check',
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
               ),
             ),
-            // Numeric Keypad (Sample for entering numbers)
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  GridView.builder(
-                    shrinkWrap: true,
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 8.0,
-                      mainAxisSpacing: 8.0,
-                    ),
-                    itemCount: 12, // 0-9 + delete
-                    itemBuilder: (context, index) {
-                      String buttonText;
-                      if (index < 9) {
-                        buttonText = (index + 1).toString();
-                      } else if (index == 9) {
-                        buttonText = '0';
-                      } else {
-                        buttonText = index == 10 ? 'OK' : 'X'; // X for delete
-                      }
-
-                      return ElevatedButton(
-                        onPressed: () {
-                          String currentValue = _nafdacController.text;
-                          if (index < 9) {
-                            _nafdacController.text = currentValue + (index + 1)
-                                .toString();
-                          } else if (index == 9) {
-                            _nafdacController.text = '${currentValue}0';
-                          } else if (index == 11) {
-                            // Handle backspace
-                            _nafdacController.text = currentValue
-                                .isNotEmpty ? currentValue
-                                .substring(0, currentValue.length - 1) : '';
-                          }
-                          setState(() {});
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ), backgroundColor: Colors.grey.shade200,
-                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                        ),
-                        child: Text(buttonText,
-                            style: const TextStyle(
-                                fontSize: 24, color: Colors.black
-                            )
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
           ],
         ),
       ),
     );
-  }
-
-  // Dummy search logic
-  Map<String, dynamic> search_product({required String nafdacNumber}) {
-    final products = [
-      {
-        "productName": "Paracetamol 500mg",
-        "nafdacNumber": "A56789",
-        "manufacturer": {"name": "ABC Pharmaceuticals"}
-      }
-    ];
-
-    for (var product in products) {
-      if (nafdacNumber == product["nafdacNumber"]) {
-        return {
-          "status": "success",
-          "message": "Product found and verified.",
-          "product": product
-        };
-      }
-    }
-
-    return {
-      "status": "error",
-      "message": "Product not found in NAFDAC records.",
-      "inputProvided": {
-        "nafdacNumber": nafdacNumber,
-      },
-      "suggestions": [
-        "Double-check the NAFDAC number entered.",
-        "If the product is suspicious, please report it to NAFDAC for investigation."
-      ]
-    };
   }
 }
