@@ -44,7 +44,7 @@ class HomePageState extends State<HomePage> {
             ),
             const SizedBox(width: 10),
             Text(
-              'Welcome back Favour',
+              'Welcome!',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
           ],
@@ -220,12 +220,14 @@ class HomeTab extends StatelessWidget {
                                 style: Theme.of(context).textTheme.bodyMedium),
                           ),
                           const SizedBox(height: 4),
-                          SizedBox(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                TextButton(
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center, // Aligns vertically at the center
+                            mainAxisSize: MainAxisSize.min, // Keeps the Row compact
+                            children: [
+                              Container(
+                                padding: EdgeInsets.zero, // Remove any default padding
+                                margin: EdgeInsets.zero, // Remove any default margin
+                                child: TextButton(
                                   onPressed: () {
                                     Navigator.push(
                                       context,
@@ -237,17 +239,32 @@ class HomeTab extends StatelessWidget {
                                   child: Text(
                                     'Start Verifying',
                                     textAlign: TextAlign.start,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .displayMedium,
+                                    style: Theme.of(context).textTheme.displayMedium,
                                   ),
                                 ),
-                                Image.asset(
-                                    'assets/icons/solar_arrow.png'
+                              ),
+                              Container(
+                                padding: EdgeInsets.zero, // No padding around the icon
+                                margin: const EdgeInsets.only(left: 0), // Add a very small gap between the TextButton and IconButton
+                                child: IconButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const DecisionScreen(),
+                                      ),
+                                    );
+                                  },
+                                  icon: Image.asset(
+                                    'assets/icons/solar_arrow.png',
+                                    height: 24,
+                                    width: 24, // Icon size
+                                  ),
+                                  splashRadius: 10, // Adjust the splash radius if needed
                                 ),
-                              ],
-                            ),
-                          ),
+                              ),
+                            ],
+                          )
                         ],
                       ),
                     ),
