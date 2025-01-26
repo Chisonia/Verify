@@ -111,6 +111,146 @@ json
 }  
 ]  
 
+
+# API DOCUMENTATION
+# Product Verification API
+
+## Overview
+This is a Flask-based API for verifying pharmaceutical products using their NAFDAC (National Agency for Food and Drug Administration and Control) numbers. The API provides endpoints to verify individual products and retrieve a list of all registered products.
+
+## Features
+- Product verification by NAFDAC number
+- Retrieve all registered products
+- SQLite database for product storage
+- CORS support for web application integration
+
+## Prerequisites
+- Python 3.7+
+- Flask
+- Flask-CORS
+
+## Installation
+
+### 1. Clone the Repository
+```bash
+git clone <your-repository-url>
+cd <repository-name>
+```
+
+### 2. Create a Virtual Environment
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+```
+
+### 3. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Initialize Database
+```bash
+python bd.py  # Initializes the SQLite database with sample products
+```
+
+## Running the API
+```bash
+python app.py
+```
+The API will start running on `http://127.0.0.1:5000/`
+
+## API Endpoints
+
+### 1. Home Route
+- **URL:** `/`
+- **Method:** `GET`
+- **Description:** Returns welcome message and available endpoints
+- **Response:**
+  ```json
+  {
+    "status": "success",
+    "message": "Welcome to the Product Verification API",
+    "endpoints": {
+      "verify_product": "/api/verify-product/<nafdac_number>",
+      "all_products": "/api/products"
+    }
+  }
+  ```
+
+### 2. Product Verification
+- **URL:** `/api/verify-product/<nafdac_number>`
+- **Method:** `GET`
+- **Description:** Verify a product by its NAFDAC number
+- **Success Response:**
+  ```json
+  {
+    "status": "success",
+    "message": "Product found and verified.",
+    "product": {
+      "productName": "Paracetamol 500mg",
+      "nafdacNumber": "A5-6789",
+      "manufacturer": {
+        "name": "ABC Pharmaceuticals"
+      }
+    }
+  }
+  ```
+- **Error Response (404):**
+  ```json
+  {
+    "status": "error",
+    "message": "Product not found in NAFDAC records."
+  }
+  ```
+
+### 3. All Products
+- **URL:** `/api/products`
+- **Method:** `GET`
+- **Description:** Retrieve all registered products
+- **Response:**
+  ```json
+  {
+    "status": "success",
+    "products": [
+      {
+        "productName": "Paracetamol 500mg",
+        "nafdacNumber": "A5-6789",
+        "manufacturer": {
+          "name": "ABC Pharmaceuticals"
+        }
+      },
+      ...
+    ]
+  }
+  ```
+
+## Database Schema
+- `id`: Primary key (auto-increment)
+- `product_name`: Name of the pharmaceutical product
+- `nafdac_number`: Unique NAFDAC registration number
+- `manufacturer_name`: Name of the product manufacturer
+
+## Error Handling
+- 404 error for non-existent NAFDAC numbers
+- Unique constraint on NAFDAC numbers
+
+## Development
+- Debug mode is enabled
+- CORS is configured for all origins
+
+## Testing
+Use `test.db` to verify database contents:
+```bash
+python test.db
+```
+
+## Security Considerations
+- Use in a secure network environment
+- Consider adding authentication for production
+- Implement input validation and sanitization
+
+
+
 **Future Enhancements**
 
 Integrate with NAFDAC’s official database for real-time verification.
